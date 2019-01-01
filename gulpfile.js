@@ -44,14 +44,31 @@ function gulpJs(){
 
 gulp.task('gulp-concat', gulpJs);
 
+
+
+//Babel
+function gulpBabel(){
+  return gulp
+    .src('./build/js/*.js')
+    .pipe(babel({
+      presets: ['env']
+    }))
+    .pipe(gulp.dest('./build/js/babel/'));
+};
+
+gulp.task('gulp-babel', gulpBabel);
+
+
 //Watch
 function watch() {
   gulp.watch('src/scss/*.scss', compilaSass);
-  gulp.watch('src/js/*.js', gulpJs);
+  gulp.watch('build/js/*.js', gulpBabel);
+  // gulp.watch('src/js/*.js', gulpJs);
+  gulp.watch('build/js/*.js').on('change', browserSync.reload);
   gulp.watch(['build/*.html', 'build/*.php']).on('change', browserSync.reload);
 }
 
 gulp.task('watch', watch)
 
 //Default
-gulp.task('default', gulp.parallel('watch', 'browser-sync', 'sass', 'gulp-concat'));
+gulp.task('default', gulp.parallel('watch', 'browser-sync', 'sass', 'gulp-babel'));
